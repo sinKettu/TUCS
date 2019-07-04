@@ -16,9 +16,11 @@ private:
     int udpSoc = -1;
     struct sockaddr_in tcpSockAddr;
     struct sockaddr_in udpSockAddr;
+    std::vector<int> connectedSockets;
 
 public:
     bool Init();
+    bool Serve();
 
 protected:
     // nothing
