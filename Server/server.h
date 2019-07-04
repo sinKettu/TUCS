@@ -13,7 +13,7 @@ class Server
 
 private:
     int tcpSoc = -1;
-    int udpSoc = -1;
+    int udpSoc = -1; // do list of sockets for UDP
     struct sockaddr_in tcpSockAddr;
     struct sockaddr_in udpSockAddr;
     std::vector<int> connectedSockets;
