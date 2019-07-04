@@ -1,21 +1,21 @@
 #include "server.h"
-#include <stdio.h>
+#include <iostream>
 
 int main()
 {
-    printf("Hello!\n");
-    printf("Test TCP & UDP server is starting...\n");
+    std::cout << "Hello!\n";
+    std::cout << "Test TCP & UDP server is starting...\n";
     Server server;
     
     if (!server.Init())
     {
-        printf("Bye!\n");
+        std::cout << "Bye!\n";
         return 1;
     }
 
-    printf("Success!\n");
+    std::cout << "Success!\n";
 
     while (server.Serve());
-
+    std::cout << "Bye!\n";
     return 0;
 }
