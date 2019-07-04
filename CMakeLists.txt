@@ -1,19 +1,17 @@
 cmake_minimum_required(VERSION 3.10)
 
-if (NOT DEFINED TYPE)
-    message( FATAL_ERROR "You have to select TYPE: server or client!")
-endif()
-
 if(TYPE STREQUAL "server")
     message("You chose to build the server")
     project(test_server)
     set(SOURCE_FILES Server/main.cpp)
     add_executable(test_server ${SOURCE_FILES})
-else(TYPE STREQUAL "client")
+elseif(TYPE STREQUAL "client")
     message("You chose to build the client")
     project(test_client)
     set(SOURCE_FILES Client/main.cpp)
     add_executable(test_client ${SOURCE_FILES})
+else()
+    message( FATAL_ERROR "You have to select TYPE: server or client!\ncmake -DTYPE=server OR cmake -DTYPE=client")
 endif()
 
 set(CMAKE_CXX_COMPILER /usr/bin/g++)
