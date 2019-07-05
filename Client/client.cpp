@@ -40,24 +40,17 @@ bool Client::IsIP(std::string address)
         return true;
 }
 
+// Данную функцию протестировать не смог, не на чем
 void Client::ResolveHostName(in_addr *ia, char *hostname)
 {
     hostent *h = gethostbyname(hostname);
     if (h == NULL)
     {
-        ia = nullptr;
+        memset(ia, 0, sizeof(*ia));
         return;
     }
 
-    in_addr *tmp = ia;
-    for (int i = 0; h->h_addr_list[i]; i++)
-    {
-        memcpy(tmp, h->h_addr_list[i], h->h_length);
-        tmp += h->h_length;
-        //debug
-        char *a = inet_ntoa(*ia);
-        a = inet_ntoa(*tmp);
-    }
+    memcpy(ia, h->h_addr_list[0], h->h_length);
 }
 
 bool Client::Connect(std::string address, unsigned short port)
@@ -91,11 +84,13 @@ bool Client::Connect(std::string address, unsigned short port)
     sa.sin_family = PF_INET;
     sa.sin_port = htons(port);
     if (IsIP(address))
+    {
         sa.sin_addr.s_addr = inet_addr(address.c_str());
+    }
     else
     {
         ResolveHostName(&sa.sin_addr, const_cast<char*>(address.c_str()));
-        if (&sa.sin_addr == nullptr)
+        if (!sa.sin_addr.s_addr)
         {
             std::cout << "Given address is not valid\n";
             close(soc);

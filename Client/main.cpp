@@ -45,8 +45,8 @@ int main(int argc, char *argv[])
             }
 
             int pos = 0;
-            for (; !argv[i][pos] || argv[i][pos] == ':'; pos++);
-            if (argv[i][pos])
+            while (!(argv[i][pos] == 0 || argv[i][pos] == ':')) pos++;
+            if (argv[i][pos] != 0)
             {
                 address = std::string(argv[i], pos);
                 port = strtoul(argv[i] + pos + 1, NULL, 10);
@@ -103,8 +103,14 @@ int main(int argc, char *argv[])
         std::string request = "";
         std::cout << ">> ";
         std::getline(std::cin, request);
-        client.Send(request);
+        if (request.empty() || !client.Send(request))
+            continue;
         std::string response = client.Receive();
-        std::cout << "Response: " << response << "\n";
+        if (response.empty())
+        {
+            std::cout << "Bad response\n";
+            continue;
+        }
+        std::cout << "Response:\n" << response << "\n";
     }
 }
