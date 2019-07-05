@@ -3,7 +3,10 @@ cmake_minimum_required(VERSION 3.10)
 if(TYPE STREQUAL "server")
     message("You chose to build the server")
     project(test_server)
-    set(SOURCE_FILES Server/main.cpp)
+    set(SOURCE_FILES Server/main.cpp
+            Server/server.h Server/server.cpp
+            Server/tcp_server.h Server/tcp_server.cpp
+            Server/udp_server.h Server/udp_server.cpp)
     add_executable(test_server ${SOURCE_FILES})
 elseif(TYPE STREQUAL "client")
     message("You chose to build the client")

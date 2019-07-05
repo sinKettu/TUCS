@@ -19,4 +19,6 @@ protected:
     Responses resp;
     std::vector<int> clients;
 
+    bool Write(int soc, std::string response);
+    std::string Read(int soc);
 };

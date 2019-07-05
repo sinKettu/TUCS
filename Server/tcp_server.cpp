@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <iostream>
 #include <string>
+#include <fcntl.h>
 
 TcpServer::TcpServer(unsigned short port)
 {
@@ -19,6 +20,7 @@ TcpServer::TcpServer(unsigned short port)
         std::cout << "Exiting\n";
         exit(0);
     }
+    fcntl(serverSocket, F_SETFL, O_NONBLOCK);
 
     memset(&serverSocAddr, 0, sizeof(serverSocAddr));
     serverSocAddr.sin_family = AF_INET;
@@ -84,7 +86,10 @@ bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
         if (newSoc <= 0)
             std::cout << "Couldn't accept pending connection\n";
         else
+        {
+            std::cout << "New client at socket '" << newSoc << "'\n";
             clients.push_back(newSoc);
+        }
     }
     else if (FD_ISSET(serverSocket, exceptions))
     {
@@ -98,21 +103,58 @@ bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
         // Main priority is give response
         if (FD_ISSET(*soc, writes) && !resp.empty() && resp.front().first == *soc)
         {
-            Write(*soc, resp.front().second);
+            if (Write(*soc, resp.front().second))
+                std::cout << "Data was send to socket '" << *soc << "'\n";
+            else
+                std::cout << "Couldn't send data to socket '" << *soc << "'\n";
+
             resp.pop();
         }
         else if (FD_ISSET(*soc, reads))
         {
             std::string request = Read(*soc);
-            std::string processed = ProcessRequest(request);
-            resp.push(std::make_pair(*soc, processed));
+            if (request.empty())
+            {
+                std::cout << "Seems like socket '" << *soc << "' was disconnected or something went wrong\n";
+                close(*soc);
+                clients.erase(soc--);
+            }
+            else
+            {
+                std::cout << "Data was read from socket '" << *soc << "'\n";
+                std::string processed = ProcessRequest(request);
+                resp.push(std::make_pair(*soc, processed));
+            }
         }
         else if (FD_ISSET(*soc, exceptions))
         {
-            std::cout << "Error at socket '" << *soc << "' was occured or socket disconnected!\nClosing socket.\n";
-            clients.erase(soc--); // ???
+            std::cout << "Error at socket '" << *soc << "' was occured!\nClosing socket.\n";
+            close(*soc);
+            clients.erase(soc--);
         }
     }
 
     return true;
+}
+
+bool TcpServer::Write(int soc, std::string response)
+{
+    if (soc <= 0 || response.length() > 1024)
+        return false;
+
+    int res = write(soc, response.c_str(), response.length());
+    return res == static_cast<int>(response.length());
+}
+
+std::string TcpServer::Read(int soc)
+{
+    if (soc <= 0)
+        return "";
+    
+    char buf[1024];
+    int res = read(soc, buf, 1024);
+    if (res > 0)
+        return std::string(buf, res) + "\0";
+    else
+        return "";
 }

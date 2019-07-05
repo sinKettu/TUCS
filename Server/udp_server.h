@@ -12,6 +12,6 @@ public:
     bool GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions);
 
 protected:
-    // nothing
+    void ReadProcessWrite(int soc);
 
 };

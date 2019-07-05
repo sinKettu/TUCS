@@ -1,3 +1,4 @@
+#pragma once
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <sys/un.h>
@@ -24,8 +25,6 @@ protected:
     int serverSocket = -1;
     struct sockaddr_in serverSocAddr;
 
-    bool Write(int soc, std::string response);
-    std::string Read(int soc);
     std::string ProcessRequest(std::string req);
 
 };

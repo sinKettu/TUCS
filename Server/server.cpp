@@ -22,36 +22,20 @@ int Server::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
     return serverSocket;
 }
 
-bool Server::Write(int soc, std::string response)
-{
-    if (soc <= 0 || response.length() > 1024)
-        return false;
-
-    int res = write(soc, response.c_str(), response.length());
-    return res == static_cast<int>(response.length());
-}
-
-std::string Server::Read(int soc)
-{
-    if (soc <= 0)
-        return "";
-    
-    char buf[1024];
-    int res = read(soc, buf, 1024);
-    if (res > 0)
-        return std::string(buf, res);
-    else
-        return "";
-}
-
 std::string Server::ProcessRequest(std::string req)
 {
-    char *ptr;
+    char *str = const_cast<char*>(req.c_str());
+    char *ptr = str;
     unsigned long long sum = 0;
     std::vector<unsigned long long> toSort;
     while (true)
     {
-        unsigned long long tmp = strtoull(req.c_str(), &ptr, 10);
+        while (!(*str >= '0' && *str <= '9') && *str) str++;
+        if (!(*str))
+            break;
+        
+        unsigned long long tmp = strtoull(str, &ptr, 10);
+        str = ptr;
         if (tmp == 0 && errno != 0)
             break;
         
