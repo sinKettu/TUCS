@@ -4,7 +4,11 @@
 
 void Usage()
 {
-
+    std::cout << "Usage: ./test_client [options]\n";
+    std::cout << "'-t' -- TCP connection, required flag.\n";
+    std::cout << "'-u' -- UDP connection, required flag.\n";
+    std::cout << "One of two must be selected.\n";
+    std::cout << "'-a address:port' -- specifying target, optional flag\n";
 }
 
 int main(int argc, char *argv[])
@@ -22,17 +26,17 @@ int main(int argc, char *argv[])
     unsigned long port = 0;
     while (i < argc)
     {
-        if (!strcmp(argv[i], "-u"))
+        if (!strcmp(argv[i], "-u") && type == -1)
         {
             type = TYPE_UDP;
             i++;
         }
-        else if (!strcmp(argv[i], "-t"))
+        else if (!strcmp(argv[i], "-t") && type == -1)
         {
             type = TYPE_TCP;
             i++;
         }
-        else if (!strcmp(argv[i], "-a"))
+        else if (!strcmp(argv[i], "-a") && port == 0)
         {
             if (++i >= argc)
             {
