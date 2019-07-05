@@ -80,8 +80,6 @@ bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
 {
     if (FD_ISSET(serverSocket, reads))
     {
-        // socklen_t socLen = sizeof(serverSocAddr);
-        // int newSoc = accept(serverSocket, (struct sockaddr *) &serverSocAddr, &socLen);
         int newSoc = accept(serverSocket, nullptr, nullptr);
         if (newSoc <= 0)
             std::cout << "Couldn't accept pending connection\n";
