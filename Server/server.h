@@ -18,7 +18,7 @@ class Server
 private:
 
 public:
-    void SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions);
+    int SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions);
     ~Server();
 
 protected:

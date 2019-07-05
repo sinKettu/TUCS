@@ -12,14 +12,16 @@ Server::~Server()
     memset(&serverSocAddr, 0, sizeof(serverSocAddr));
 }
 
-void Server::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
+int Server::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
 {
     if (serverSocket <= 0)
-        return;
+        return -1;
     
     FD_SET(serverSocket, reads);
     FD_SET(serverSocket, writes);
     FD_SET(serverSocket, exceptions);
+
+    return serverSocket;
 }
 
 bool Server::Write(int soc, std::string response)

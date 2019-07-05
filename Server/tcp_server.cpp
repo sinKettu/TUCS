@@ -42,17 +42,25 @@ TcpServer::TcpServer(unsigned short port)
     }
 }
 
-void TcpServer::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
+int TcpServer::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
 {
-    Server::SetFDs(reads, writes, exceptions);
+    int n = Server::SetFDs(reads, writes, exceptions);
+    if (n < 0)
+    {
+        std::cout << "Something went wrong!\n";
+        return -1;
+    }
 
     std::vector<int>::iterator iter;
     for (iter = clients.begin(); iter != clients.end(); iter++)
     {
+        n = std::max(*iter, n);
         FD_SET(*iter, reads);
         FD_SET(*iter, writes);
         FD_SET(*iter, exceptions);
     }
+    
+    return n + 1;
 }
 
 bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
@@ -67,7 +75,6 @@ bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
     else if (FD_ISSET(serverSocket, exceptions))
     {
         std::cout << "Error at TCP server was occured!\nStopping TCP server.\n";
-        this->~TcpServer();
         return false;
     }
 
