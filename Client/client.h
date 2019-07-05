@@ -23,7 +23,7 @@ private:
 public:
     Client(char type);
     ~Client();
-    bool Connect(std::string address, unsigned int port);
+    bool Connect(std::string address, unsigned short port);
     bool Send(std::string message);
     std::string Receive();
 

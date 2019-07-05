@@ -60,7 +60,7 @@ void Client::ResolveHostName(in_addr *ia, char *hostname)
     }
 }
 
-bool Client::Connect(std::string address, unsigned int port)
+bool Client::Connect(std::string address, unsigned short port)
 {
     if (protocol == TYPE_TCP)
     {
