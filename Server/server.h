@@ -3,26 +3,30 @@
 #include <sys/un.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#include <vector>
+#include <string>
+#include <queue>
+#include <utility>
 
 #define TCP_PORT 9999
 #define UDP_PORT 9998
+
+typedef std::queue<std::pair<int, std::string>> Responses;
 
 class Server
 {
 
 private:
-    int tcpSoc = -1;
-    int udpSoc = -1; // do list of sockets for UDP
-    struct sockaddr_in tcpSockAddr;
-    struct sockaddr_in udpSockAddr;
-    std::vector<int> connectedSockets;
 
 public:
-    bool Init();
-    bool Serve();
+    void SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions);
+    ~Server();
 
 protected:
-    // nothing
+    int serverSocket = -1;
+    struct sockaddr_in serverSocAddr;
+    Responses resp;
+
+    bool Write(int soc, std::string response);
+    std::string Read(int soc);
 
 };
