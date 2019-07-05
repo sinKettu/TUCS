@@ -1,6 +1,6 @@
 #include "server.h"
 #include <unistd.h>
-#include <iostream>
+#include <algorithm>
 
 Server::~Server()
 {
@@ -42,4 +42,52 @@ std::string Server::Read(int soc)
         return std::string(buf, res);
     else
         return "";
+}
+
+std::string Server::ProcessRequest(std::string req)
+{
+    char *ptr;
+    unsigned long long sum = 0;
+    std::vector<unsigned long long> toSort;
+    while (true)
+    {
+        unsigned long long tmp = strtoull(req.c_str(), &ptr, 10);
+        if (tmp == 0 && errno != 0)
+            break;
+        
+        if (UINT64_MAX - sum < tmp || errno == ERANGE)
+            return "Overflow error\n";
+        
+        // На данном моменте можно обойтись без сортировки
+        // Если применить двоичный поиск со вставкой, то сразу
+        // после парсинга можно получить отсортированный в нужном
+        // порядке вектор. Это займет меньше действий и израсходует
+        // меньше памяти. Таким свойством также обладает
+        // класс std::map, но его использование займет больше ресурсов
+        sum += tmp;
+        toSort.push_back(tmp);
+    }
+
+    if (toSort.empty())
+    {
+        return "There was nothing to process\n";
+    }
+    else
+    {
+        std::sort(toSort.begin(), toSort.end());
+        std::string result = "";
+        std::vector<unsigned long long>::iterator num;
+        for (num = toSort.begin(); num != toSort.end(); num++)
+        {
+            result.append(std::to_string(*num));
+            result.append(" ", 1);
+        }
+        result.pop_back();
+        result.push_back('\n');
+        result.append(std::to_string(sum));
+        result.push_back('\n');
+        result.push_back(0);
+
+        return result;
+    }
 }

@@ -28,5 +28,6 @@ protected:
 
     bool Write(int soc, std::string response);
     std::string Read(int soc);
+    std::string ProcessRequest(std::string req);
 
 };
