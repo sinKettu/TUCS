@@ -72,8 +72,10 @@ int main(int argc, char *argv[])
         return 1;
     }
     std::cout << "Hello!\n";
+    std::cout << "Use CTRL+C to close program\n";
     if (port == 0)
     {
+        std::cout << "Seems like you didn't specify target\n";
         std::cout << "Address: ";
         std::getline(std::cin, address);
         std::cout << "Port: ";
@@ -85,5 +87,20 @@ int main(int argc, char *argv[])
         }
     }
 
-    
+    Client client(type);
+    if (!client.Connect(address, static_cast<unsigned short>(port)))
+    {
+        std::cout << "Connection failed!\n";
+        return 1;
+    }
+
+    while (true)
+    {
+        std::string request = "";
+        std::cout << ">> ";
+        std::getline(std::cin, request);
+        client.Send(request);
+        std::string response = client.Receive();
+        std::cout << "Response: " << response << "\n";
+    }
 }
