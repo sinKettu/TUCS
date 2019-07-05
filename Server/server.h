@@ -10,12 +10,11 @@
 #define TCP_PORT 9999
 #define UDP_PORT 9998
 
-typedef std::queue<std::pair<int, std::string>> Responses;
-
 class Server
 {
 
 private:
+    // nothing
 
 public:
     int SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions);
@@ -24,7 +23,6 @@ public:
 protected:
     int serverSocket = -1;
     struct sockaddr_in serverSocAddr;
-    Responses resp;
 
     bool Write(int soc, std::string response);
     std::string Read(int soc);

@@ -7,8 +7,6 @@ Server::~Server()
     if (serverSocket > 0)
         close(serverSocket);
     
-    Responses tmp;
-    std::swap(resp, tmp);
     memset(&serverSocAddr, 0, sizeof(serverSocAddr));
 }
 
