@@ -8,14 +8,16 @@ TcpServer::TcpServer(unsigned short port)
     if (port <= 1000)
     {
         std::cout << "Please choose port value greater than 1000!\n";
-        return;
+        std::cout << "Exiting\n";
+        exit(0);
     }
 
     serverSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
     if (serverSocket == -1)
     {
         std::cout << "Couldn't create TCP socket!\n";
-        return;
+        std::cout << "Exiting\n";
+        exit(0);
     }
 
     memset(&serverSocAddr, 0, sizeof(serverSocAddr));
@@ -27,14 +29,16 @@ TcpServer::TcpServer(unsigned short port)
     {
         std::cout << "Couldn't bind TCP socket!\n";
         close(serverSocket);
-        return;
+        std::cout << "Exiting\n";
+        exit(0);
     }
 
     if (listen(serverSocket, 5) == -1)
     {
         std::cout << "Couldn't set up TCP socket for listening!\n";
         close(serverSocket);
-        return;
+        std::cout << "Exiting\n";
+        exit(0);
     }
 }
 
@@ -51,7 +55,7 @@ void TcpServer::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
     }
 }
 
-void TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
+bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
 {
     if (FD_ISSET(serverSocket, reads))
     {
@@ -64,7 +68,7 @@ void TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
     {
         std::cout << "Error at TCP server was occured!\nStopping TCP server.\n";
         this->~TcpServer();
-        return;
+        return false;
     }
 
     std::vector<int>::iterator soc;
@@ -88,4 +92,6 @@ void TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
             clients.erase(soc--); // ???
         }
     }
+
+    return true;
 }
