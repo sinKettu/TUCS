@@ -42,6 +42,17 @@ TcpServer::TcpServer(unsigned short port)
     }
 }
 
+TcpServer::~TcpServer()
+{
+    std::vector<int>::iterator soc;
+    for (soc = clients.begin(); soc != clients.end(); soc++)
+    {
+        if (*soc > 0)
+            close(*soc);
+    }
+    clients.clear();
+}
+
 int TcpServer::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
 {
     int n = Server::SetFDs(reads, writes, exceptions);
@@ -59,7 +70,7 @@ int TcpServer::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
         FD_SET(*iter, writes);
         FD_SET(*iter, exceptions);
     }
-    
+
     return n + 1;
 }
 
@@ -95,7 +106,7 @@ bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
         }
         else if (FD_ISSET(*soc, exceptions))
         {
-            std::cout << "Error at socket '" << *soc << "' was occured!\nClosing socket.\n";
+            std::cout << "Error at socket '" << *soc << "' was occured or socket disconnected!\nClosing socket.\n";
             clients.erase(soc--); // ???
         }
     }
