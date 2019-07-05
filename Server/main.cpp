@@ -1,21 +1,39 @@
-#include "server.h"
+#include "tcp_server.h"
+#include "udp_server.h"
 #include <iostream>
+#include <unistd.h>
 
 int main()
 {
     std::cout << "Hello!\n";
-    std::cout << "Test TCP & UDP server is starting...\n";
-    Server server;
-    
-    if (!server.Init())
+    TcpServer ts;
+    //UdpServer us;
+    fd_set rfds, wfds, efds;
+    while (true)
     {
-        std::cout << "Bye!\n";
-        return 1;
+        FD_SET(STDIN_FILENO, &rfds);
+        int tn = ts.SetFDs(&rfds, &wfds, &efds);
+        if (tn < 0)
+            break;
+
+        // int un = us.SetFDs(&rfds, &wfds, &efds);
+        // if (un < 0)
+        //    break;
+
+        timeval tv;
+        tv.tv_sec = 0;
+        tv.tv_usec = 500;
+        // int res = select(std::max(tn, un), &rfds, &wfds, &efds, &tv);
+        // if (res < 0)
+        // {
+        //      std::cout << "Unknow error!\n";
+        //      break;
+        // }
+        // else if (res == 0)
+        // {
+        //    continue;
+        // }
     }
 
-    std::cout << "Success!\n";
-
-    while (server.Serve());
-    std::cout << "Bye!\n";
     return 0;
 }
