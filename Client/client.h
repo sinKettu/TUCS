@@ -15,14 +15,14 @@ class Client
 private:
     int soc = -1;
     sockaddr_in sa;
-    char proto = -1;
+    char protocol = -1;
 
-    Client(char type);
-    ~Client();
     bool IsIP(std::string address);
     void ResolveHostName(in_addr *ia, char *hostname);
 
 public:
+    Client(char type);
+    ~Client();
     bool Connect(std::string address, unsigned int port);
     bool Send(std::string message);
     std::string Receive();

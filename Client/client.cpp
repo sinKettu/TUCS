@@ -4,10 +4,10 @@
 Client::Client(char type)
 {
     if (type == TYPE_TCP || type == TYPE_UDP)
-        proto = type;
+        protocol = type;
     else
     {
-        std::cout << "Unknown protocol!\n";
+        std::cout << "Unknown protocol\n";
         exit(1);
     }
     memset(&sa, 0, sizeof(sa));
@@ -62,7 +62,7 @@ void Client::ResolveHostName(in_addr *ia, char *hostname)
 
 bool Client::Connect(std::string address, unsigned int port)
 {
-    if (proto == TYPE_TCP)
+    if (protocol == TYPE_TCP)
     {
         soc = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
         if (soc == -1)
@@ -72,7 +72,7 @@ bool Client::Connect(std::string address, unsigned int port)
             return false;
         }
     }
-    else if (proto == TYPE_UDP)
+    else if (protocol == TYPE_UDP)
     {
         soc = socket(PF_INET, SOCK_DGRAM, IPPROTO_UDP);
         if (soc == -1)
@@ -84,7 +84,7 @@ bool Client::Connect(std::string address, unsigned int port)
     }
     else
     {
-        std::cout << "Unknow error\n";
+        std::cout << "Unknow protocol\n";
         return false;
     }
 
@@ -103,7 +103,7 @@ bool Client::Connect(std::string address, unsigned int port)
         }
     }
 
-    if (proto == TYPE_TCP && connect(soc, (struct sockaddr*)&sa, sizeof(sa)) == -1)
+    if (protocol == TYPE_TCP && connect(soc, (struct sockaddr*)&sa, sizeof(sa)) == -1)
     {
         std::cout << "Couldn't establish TCP connection\n";
         close(soc);
