@@ -1,3 +1,4 @@
+#pragma once
 #include "server.h"
 
 class TcpServer : public Server
