@@ -10,7 +10,7 @@ TcpServer::TcpServer(unsigned short port)
     {
         std::cout << "Please choose port value greater than 1000!\n";
         std::cout << "Exiting\n";
-        exit(0);
+        exit(1);
     }
 
     serverSocket = socket(PF_INET, SOCK_STREAM, IPPROTO_TCP);
@@ -18,7 +18,7 @@ TcpServer::TcpServer(unsigned short port)
     {
         std::cout << "Couldn't create TCP socket!\n";
         std::cout << "Exiting\n";
-        exit(0);
+        exit(1);
     }
     fcntl(serverSocket, F_SETFL, O_NONBLOCK);
 
@@ -32,7 +32,7 @@ TcpServer::TcpServer(unsigned short port)
         std::cout << "Couldn't bind TCP socket!\n";
         close(serverSocket);
         std::cout << "Exiting\n";
-        exit(0);
+        exit(1);
     }
 
     if (listen(serverSocket, 5) == -1)
@@ -40,7 +40,7 @@ TcpServer::TcpServer(unsigned short port)
         std::cout << "Couldn't set up TCP socket for listening!\n";
         close(serverSocket);
         std::cout << "Exiting\n";
-        exit(0);
+        exit(1);
     }
 }
 
