@@ -3,13 +3,69 @@
 #include <iostream>
 #include <unistd.h>
 
+bool PortsRequest(unsigned short &tp, unsigned short &up)
+{
+    std::cout << "Please, enter TCP and UDP ports or press <ENTER>\n";
+    std::cout << "to use default ones (TCP: " << TCP_PORT << ", UDP: " << UDP_PORT << ")\n";
+    std::cout << "TCP: ";
+    std::string tmp;
+    std::getline(std::cin, tmp);
+    if (tmp.empty())
+    {
+        tp = TCP_PORT;
+    }
+    else
+    {
+        char *ptr;
+        unsigned long n = strtoul(tmp.c_str(), &ptr, 10);
+        if (errno != 0 || n == 0 || n > UINT16_MAX || ptr - tmp.c_str() != tmp.length())
+        {
+            tp = up = 0;
+            return false;
+        }
+        else
+        {
+            tp = static_cast<unsigned short>(n);
+        }
+    }
+
+    std::cout << "UDP: ";
+    std::getline(std::cin, tmp);
+    if (tmp.empty())
+    {
+        up = UDP_PORT;
+    }
+    else
+    {
+        char *ptr;
+        unsigned long n = strtoul(tmp.c_str(), &ptr, 10);
+        if (errno != 0 || n == 0 || n > UINT16_MAX || ptr - tmp.c_str() != tmp.length())
+        {
+            tp = up = 0;
+            return false;
+        }
+        else
+        {
+            up = static_cast<unsigned short>(n);
+        }
+    }
+
+    return true;
+}
+
 int main()
 {
     std::cout << "Hello!\n";
-    TcpServer ts;
-    std::cout << "TCP Server is up at port " << TCP_PORT << "!\n";
-    UdpServer us;
-    std::cout << "UDP Server is up at port " << UDP_PORT << "!\n";
+    unsigned short tp, up;
+    if (!PortsRequest(tp, up))
+    {
+        std::cout << "Wrong port!\n";
+        return 1;
+    }
+    TcpServer ts(tp);
+    std::cout << "TCP Server is up at port " << tp << "!\n";
+    UdpServer us(up);
+    std::cout << "UDP Server is up at port " << up << "!\n";
     std::cout << "Type 'exit' to close program\n";
     fd_set rfds, wfds, efds;
     while (true)
