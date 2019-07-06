@@ -92,6 +92,6 @@ void UdpServer::ReadProcessWrite(int soc)
     if (res <= 0)
         std::cout << "Couldn't write data to UDP socket\n";
     else
-        std::cout << "Data was successfully written to UDP socket\n";
+        std::cout << "Data was successfully sent to UDP socket\n";
     
 }

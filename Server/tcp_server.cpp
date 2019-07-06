@@ -102,7 +102,7 @@ bool TcpServer::GetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
         if (FD_ISSET(*soc, writes) && !resp.empty() && resp.front().first == *soc)
         {
             if (Write(*soc, resp.front().second))
-                std::cout << "Data was send to socket '" << *soc << "'\n";
+                std::cout << "Data was sent to socket '" << *soc << "'\n";
             else
                 std::cout << "Couldn't send data to socket '" << *soc << "'\n";
 
