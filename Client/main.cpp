@@ -42,7 +42,8 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // parsing given arguments
+    // Parsing given arguments
+    
     int i = 1;
     char type = -1;
     std::string address;
@@ -67,6 +68,7 @@ int main(int argc, char *argv[])
                 return 1;
             }
 
+            // extracting address(str) and port(uint16) from 'address:port'
             int pos = 0;
             while (!(argv[i][pos] == 0 || argv[i][pos] == ':')) pos++;
             if (argv[i][pos] != 0)

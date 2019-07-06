@@ -3,6 +3,7 @@
 #include <iostream>
 #include <unistd.h>
 
+// Receiving ports from console
 bool PortsRequest(unsigned short &tp, unsigned short &up)
 {
     std::cout << "Please, enter TCP and UDP ports or press <ENTER>\n";
@@ -68,6 +69,7 @@ int main()
     std::cout << "UDP Server is up at port " << up << "!\n";
     std::cout << "Type 'exit' to close program\n";
     fd_set rfds, wfds, efds;
+
     while (true)
     {
         FD_ZERO(&rfds);
@@ -87,6 +89,7 @@ int main()
         tv.tv_sec = 0;
         tv.tv_usec = 500;
         int res = select(std::max(tn, un) + 1, &rfds, &wfds, &efds, &tv);
+        
         if (res < 0)
         {
              std::cout << "Unknow error!\n";
@@ -98,9 +101,11 @@ int main()
         }
         else
         {
+            // General actions
             if (!(us.GetFDs(&rfds, &wfds, &efds) && ts.GetFDs(&rfds, &wfds, &efds)))
                 return 1;
             
+            // Receiving command to exit
             if (FD_ISSET(STDIN_FILENO, &rfds))
             {
                 char command[6]; // exit\n\0
