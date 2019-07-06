@@ -25,7 +25,6 @@ int Server::SetFDs(fd_set *reads, fd_set *writes, fd_set *exceptions)
 std::string Server::ProcessRequest(std::string req)
 {
     char *str = const_cast<char*>(req.c_str());
-    char *ptr = str;
     unsigned long long sum = 0;
     std::vector<unsigned long long> toSort;
     while (true)
@@ -34,8 +33,7 @@ std::string Server::ProcessRequest(std::string req)
         if (!(*str))
             break;
         
-        unsigned long long tmp = strtoull(str, &ptr, 10);
-        str = ptr;
+        unsigned long long tmp = strtoull(str, &str, 10);
         if (tmp == 0 && errno != 0)
             break;
         
