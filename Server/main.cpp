@@ -49,9 +49,9 @@ int main()
             {
                 char command[6]; // exit\n\0
                 int len = read(STDIN_FILENO, command, 6);
-                if (read <= 0)
+                if (len <= 0)
                     continue;
-                if (!strcmp(command, "exit\n"))
+                if (!strncmp(command, "exit\n", 5))
                     break;
             }
         }
