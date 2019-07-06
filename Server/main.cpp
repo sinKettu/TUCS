@@ -7,9 +7,9 @@ int main()
 {
     std::cout << "Hello!\n";
     TcpServer ts;
-    std::cout << "TCP Server is up!\n";
+    std::cout << "TCP Server is up at port " << TCP_PORT << "!\n";
     UdpServer us;
-    std::cout << "UDP Server is up!\n";
+    std::cout << "UDP Server is up at port " << UDP_PORT << "!\n";
     std::cout << "Type 'exit' to close program\n";
     fd_set rfds, wfds, efds;
     while (true)
