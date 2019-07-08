@@ -40,7 +40,6 @@ bool Client::IsIP(std::string address)
         return true;
 }
 
-// Данную функцию протестировать не смог, не на чем
 void Client::ResolveHostName(in_addr *ia, char *hostname)
 {
     hostent *h = gethostbyname(hostname);
